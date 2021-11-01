@@ -1,9 +1,103 @@
 body {
-  background-color: #282c34;
+  background-color: #17212B;
 }
 
 .App {
   text-align: center;
   max-width: 728px;
   margin: 0 auto;
+}
+
+/* хедер занимает от 50 пикселей до 10% вьюпорта, зафиксирован наверху для доступа при скролле, самый верхний слой */
+.App header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  position: fixed;
+  box-sizing: border-box;
+  height: 10vh;
+  min-height: 50px;
+  width: 100%;
+  max-width: 728px;
+  padding: 10px;
+  top: 0;
+  z-index: 99;
+
+  background-color: #181717;
+  color: white;
+}
+
+.chatRoom {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  min-height: 100vh;
+  background-color: #0E1621;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+
+  height: 80vh;
+  padding: 10px;
+  /* отступ сверху и снизу совпадает с размерами панелей, чтобы они не скрывали часть сообщений */
+  margin: 10vh 0;
+/* нужно для стиля скроллбара через -webkit-scrollbar */
+  overflow-y: scroll;
+}
+
+/* псевдо-элемент для стиля скроллбара элемента */
+main::-webkit-scrollbar {
+  width: 0.25rem;
+}
+
+main::-webkit-scrollbar-track {
+  background: #232A34;
+}
+
+main::-webkit-scrollbar-thumb {
+  background: #4E555D;
+}
+
+form {
+  display: flex;
+  position: fixed;
+  height: 10vh;
+  width: 100%;
+  max-width: 728px;
+  bottom: 0;
+  font-size: 1.5rem;
+  background-color: rgb(24, 23, 23);
+}
+
+form button {
+  width: 20%;
+  background-color: rgb(56, 56, 143);
+}
+
+input {
+  width: 100%;
+  padding: 0 10px;
+
+  outline: none;
+  border: none;
+
+  font-size: 1.5rem;
+  line-height: 1.5;
+  background: rgb(58, 58, 58);
+  color: white;
+}
+
+button {
+  display: inline-block;
+  padding: 15px 32px;
+  border: none;
+  text-align: center;
+  cursor: pointer;
+  font-size: 1.25rem;
+  background-color: #282c34; 
+  color: white;
 }

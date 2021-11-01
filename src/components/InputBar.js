@@ -22,7 +22,7 @@ const InputBar = ({ messages, setMessages, feedEnd }) => {
     return (
         <div>
             <form onSubmit={sendMessageHandler}>
-                <input type="text" value={inputValue} onChange={changeEventHandler} placeholder="спросите меня про lte" />
+                <input type="text" value={inputValue} onChange={changeEventHandler} placeholder="спросите меня про LTE" />
                 <button>🕊️</button>
             </form>
         </div>

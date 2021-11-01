@@ -4,7 +4,14 @@ import ChatRoom from './ChatRoom';
 function App() {
   return (
     <div className="App">
-      <ChatRoom />
+      <header>
+        <h1>⚛️🔥💬</h1>
+        <button>Перезапустить</button>
+      </header>
+      <section className='chatRoom'>
+        <ChatRoom />
+      </section>
+
     </div>
   );
 }
