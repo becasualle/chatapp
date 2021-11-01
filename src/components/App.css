@@ -1,5 +1,12 @@
+/* ОБЩИЕ СТИЛИ */
+
 body {
   background-color: #17212B;
+}
+
+ul, li {
+  text-align: left;
+  list-style: none;
 }
 
 .App {
@@ -8,7 +15,42 @@ body {
   margin: 0 auto;
 }
 
-/* хедер занимает от 50 пикселей до 10% вьюпорта, зафиксирован наверху для доступа при скролле, самый верхний слой */
+/* СЕКЦИЯ ЧАТА */
+.chatRoom {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  min-height: 100vh;
+  background-color: #0E1621;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+
+  height: 80vh;
+  padding: 10px;
+  /* отступ сверху и снизу совпадает с размерами панелей, чтобы они не скрывали часть сообщений */
+  margin: 10vh 0 10vh;
+/* нужно для стиля скроллбара через -webkit-scrollbar */
+  overflow-y: scroll;
+}
+
+/* псевдо-элемент для стиля скроллбара элемента */
+main::-webkit-scrollbar {
+  width: 0.25rem;
+}
+
+main::-webkit-scrollbar-track {
+  background: #232A34;
+}
+
+main::-webkit-scrollbar-thumb {
+  background: #4E555D;
+}
+
+/* ХЕДЕР ЧАТА */
 .App header {
   display: flex;
   align-items: center;
@@ -28,40 +70,7 @@ body {
   color: white;
 }
 
-.chatRoom {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-
-  min-height: 100vh;
-  background-color: #0E1621;
-}
-
-main {
-  display: flex;
-  flex-direction: column;
-
-  height: 80vh;
-  padding: 10px;
-  /* отступ сверху и снизу совпадает с размерами панелей, чтобы они не скрывали часть сообщений */
-  margin: 10vh 0;
-/* нужно для стиля скроллбара через -webkit-scrollbar */
-  overflow-y: scroll;
-}
-
-/* псевдо-элемент для стиля скроллбара элемента */
-main::-webkit-scrollbar {
-  width: 0.25rem;
-}
-
-main::-webkit-scrollbar-track {
-  background: #232A34;
-}
-
-main::-webkit-scrollbar-thumb {
-  background: #4E555D;
-}
-
+/* СТРОКА ВВОДА СООБЩЕНИЯ */
 form {
   display: flex;
   position: fixed;
@@ -71,11 +80,6 @@ form {
   bottom: 0;
   font-size: 1.5rem;
   background-color: rgb(24, 23, 23);
-}
-
-form button {
-  width: 20%;
-  background-color: rgb(56, 56, 143);
 }
 
 input {
@@ -91,6 +95,7 @@ input {
   color: white;
 }
 
+/* КНОПКИ */
 button {
   display: inline-block;
   padding: 15px 32px;
@@ -100,4 +105,54 @@ button {
   font-size: 1.25rem;
   background-color: #282c34; 
   color: white;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+form button {
+  width: 20%;
+  background-color: rgb(56, 56, 143);
+}
+
+/* АВАТАР */
+img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin: 2px 5px;
+}
+
+/* СООБЩЕНИЯ */
+p {
+  position: relative;
+  max-width: 500px;
+  padding: 10px 20px;
+  margin-bottom: 12px;
+  line-height: 24px;
+  border-radius: 25px;
+  text-align: center;
+  color: white;
+}
+/* контейнер с сообщением */
+.message {
+  display: flex;
+  align-items: center;
+}
+
+/* в зависимости от типа входящее/полученное меняем сторону и цвет */
+.sent {
+  flex-direction: row-reverse;
+}
+
+.sent p {
+  color: white;
+  background: #0b93f6;
+  align-self: flex-end;
+}
+.received p {
+  background: #e5e5ea;
+  color: black;
 }
