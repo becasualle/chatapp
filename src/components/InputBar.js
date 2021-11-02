@@ -4,7 +4,7 @@ import Message from '../uitils/Message';
 import { FaPaperPlane } from "react-icons/fa";
 
 
-const InputBar = ({ messages, setMessages, feedEnd }) => {
+const InputBar = ({ messages, setMessages, feedEnd, setLastUserMsg }) => {
     const [inputValue, setInputValue] = useState('');
     // записываем значение ввода в поле сообщения в inputValue
     const changeEventHandler = e => {
@@ -16,6 +16,7 @@ const InputBar = ({ messages, setMessages, feedEnd }) => {
         e.preventDefault();
         const newMsg = new Message(inputValue, 'sent');
         setMessages([...messages, newMsg]);
+        setLastUserMsg(newMsg.text);
         setInputValue('');
     }
 
@@ -26,7 +27,7 @@ const InputBar = ({ messages, setMessages, feedEnd }) => {
     return (
 
         <form onSubmit={sendMessageHandler}>
-            <input type="text" value={inputValue} onChange={changeEventHandler} placeholder="спросите меня про LTE" />
+            <input type="text" value={inputValue} onChange={changeEventHandler} placeholder="спросите про LTE" />
             <button type="submit" disabled={!inputValue}><FaPaperPlane /></button>
         </form>
 

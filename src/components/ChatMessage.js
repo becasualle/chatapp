@@ -1,10 +1,13 @@
 import React from 'react'
-import user from '../img/user.png'
+import userImg from '../img/user.png'
+import assistantImg from '../img/assistant.png'
 
 const ChatMessage = ({ text, type }) => {
+    const avatar = type === 'sent' ? userImg : assistantImg;
+
     return (
         <div className={`message ${type}`}>
-            <img src={user} alt="avatar" />
+            <img src={avatar} alt="avatar" />
             <p>{text}</p>
         </div>
     )
