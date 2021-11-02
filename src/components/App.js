@@ -85,9 +85,12 @@ function App() {
   }
 
   const resetChat = () => {
-    // очистить локальное хранилище
-    // удалить cuid
-    // корректно инициализировать новый чат
+    localStorage.clear();
+    setMessages([]);
+    setCuid('');
+    setLastBotMsg('');
+    setLastUserMsg('');
+    fetchData(urlType.init)
   };
 
   useEffect(() => {
