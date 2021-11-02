@@ -3,126 +3,119 @@ import { useState, useEffect } from 'react';
 import ChatRoom from './ChatRoom';
 import Message from '../uitils/Message';
 
+// Подгружаем историю из локального хранилища
+const getLocalStorage = () => {
+  let messages = localStorage.getItem('messages');
+  if (messages) {
+    return JSON.parse(localStorage.getItem('messages'))
+  } else {
+    return []
+  }
+}
+
 function App() {
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState(getLocalStorage());
   const [cuid, setCuid] = useState('');
   const [lastBotMsg, setLastBotMsg] = useState('');
   const [lastUserMsg, setLastUserMsg] = useState('');
 
-  const addBotMsg = (msg) => {
+  const uuid = '772c9859-4dd3-4a0d-b87d-d76b9f43cfa4';
+  const euid = '00b2fcbe-f27f-437b-a0d5-91072d840ed3';
+  const url = 'https://biz.nanosemantics.ru/api/bat/nkd/json/Chat.';
+  // три типа методов 
+  const urlType = {
+    init: 'init',
+    event: 'event',
+    request: 'request'
+  }
+  // в зависимости от метода конструируем ссылку и параметры POST-запроса: меняется body
+  const buildFetchInput = (inputType) => {
+    let fetchUrl = '';
+    let reqBody = {};
 
+    if (inputType === urlType.init) {
+      fetchUrl = url + urlType.init;
+      reqBody = { uuid }
+    } else if (inputType === urlType.event) {
+      fetchUrl = url + urlType.event;
+      reqBody = {
+        cuid,
+        euid
+      };
+    } else if (inputType === urlType.request) {
+      fetchUrl = url + urlType.request;
+      reqBody = {
+        cuid,
+        text: lastUserMsg
+      };
+    }
+
+    const params = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'text/plain'
+      },
+      body: JSON.stringify(reqBody)
+    }
+    return { fetchUrl, params }
+  }
+
+  // получаем данные от API и в зависимости от их типа обновляем стейты
+  const fetchData = async (inputType) => {
+    try {
+      const { fetchUrl, params } = buildFetchInput(inputType);
+      const response = await fetch(fetchUrl, params);
+      const data = await response.json();
+      // обновляем идентификатор чата когда происходит инициализация
+      if (inputType === urlType.init) {
+        setCuid(data.result.cuid)
+      } else {
+        // когда событие READY (приветственное сообщение) или метод REQUEST (ответ на запрос пользователя) - обновляем последнее сообщение
+        const textValue = data.result.text.value;
+        textValue && setLastBotMsg(textValue);
+      }
+    } catch (error) {
+      throw error;
+    }
+  };
+  // добавляем сообщение от бота в наш список сообщений
+  const addBotMsg = (msg) => {
     const newMsg = new Message(msg, 'received');
     setMessages([...messages, newMsg]);
-
   }
 
-  // CHAT.INIT Инициализация чата
-  const initURL = 'https://biz.nanosemantics.ru/api/bat/nkd/json/Chat.init';
-  const initRequest = {
-    uuid: '772c9859-4dd3-4a0d-b87d-d76b9f43cfa4',
-    cuid: '',
-    context: {}
-  }
-
-  const initParams = {
-    // mode: 'no-cors',
-    method: 'POST',
-    headers: {
-      'Content-Type': 'text/plain'
-    },
-    body: JSON.stringify(initRequest)
-  };
-
-  const fetchCuid = async (url, initParams) => {
-    try {
-      const response = await fetch(url, initParams);
-      const data = await response.json();
-      setCuid(data.result.cuid)
-    } catch (error) {
-      throw error;
-    }
+  const resetChat = () => {
+    // очистить локальное хранилище
+    // удалить cuid
+    // корректно инициализировать новый чат
   };
 
   useEffect(() => {
-    fetchCuid(initURL, initParams);
+    // fetchCuid(initURL, initParams);
+    fetchData(urlType.init)
   }, []);
 
-  // CHAT.EVENT получение приветственного сообщения от инфа
-  const eventURL = 'https://biz.nanosemantics.ru/api/bat/nkd/json/Chat.event';
-
-  const eventRequest = {
-    cuid,
-    "euid": '00b2fcbe-f27f-437b-a0d5-91072d840ed3'
-  }
-
-  const eventParams = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'text/plain'
-    },
-    body: JSON.stringify(eventRequest)
-  };
-
-  const fetchEvent = async (url, initParams) => {
-    try {
-      const response = await fetch(url, initParams);
-      const data = await response.json();
-      const textValue = data.result.text.value;
-      textValue && setLastBotMsg(textValue);
-      console.log(data)
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
-  };
-
   useEffect(() => {
-    cuid && fetchEvent(eventURL, eventParams);
+    cuid && fetchData(urlType.event);
   }, [cuid]);
 
   useEffect(() => {
     lastBotMsg && addBotMsg(lastBotMsg);
   }, [lastBotMsg]);
 
-  // CHAT.REQUEST Получение ответа и реакции инфа на запрос пользователя
-  const requestURL = 'https://biz.nanosemantics.ru/api/bat/nkd/json/Chat.request';
-
-  const readyRequest = {
-    cuid,
-    text: lastUserMsg
-  }
-
-  const readyParams = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'text/plain'
-    },
-    body: JSON.stringify(readyRequest)
-  };
-
-  const fetchReady = async (url, initParams) => {
-    console.log('works')
-    try {
-      const response = await fetch(url, initParams);
-      const data = await response.json();
-      const textValue = data.result.text.value;
-      textValue && setLastBotMsg(textValue);
-      console.log(data)
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
-  };
+  useEffect(() => {
+    lastUserMsg && fetchData(urlType.request);
+  }, [lastUserMsg]);
 
   useEffect(() => {
-    lastUserMsg && fetchReady(requestURL, readyParams);
-  }, [lastUserMsg]);
+    localStorage.setItem('messages', JSON.stringify(messages))
+  }, [messages])
 
   return (
     <div className="App">
       <header>
         <h1>⚛️🔥💬</h1>
-        <button>Очистить</button>
+        <button onClick={resetChat}>Очистить</button>
       </header>
       <section className='chatRoom'>
         <ChatRoom messages={messages} setMessages={setMessages} setLastUserMsg={setLastUserMsg} />
