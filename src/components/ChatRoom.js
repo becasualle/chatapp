@@ -1,5 +1,5 @@
 import React from 'react'
-import { useRef } from 'react/cjs/react.development';
+import { useRef } from 'react';
 import ChatMessage from './ChatMessage';
 import InputBar from './InputBar';
 
