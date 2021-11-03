@@ -1,7 +1,7 @@
 import './App.css';
 import { useState, useEffect } from 'react';
-import ChatRoom from './ChatRoom';
-import Message from '../uitils/Message';
+import ChatRoom from './components/ChatRoom';
+import Message from './uitils/Message';
 
 // Подгружаем историю из локального хранилища
 const getLocalMessages = () => {
